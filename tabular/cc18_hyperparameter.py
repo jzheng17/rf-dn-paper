@@ -106,7 +106,7 @@ for dataset_index, dataset in enumerate(dataset_indices):
     parameters_GBDT={'max_depth':1, 'random_state':0} #'learning_rate':1.0, 
     
     mlp = MLPClassifier(max_iter=200)
-    clf = RandomizedSearchCV(mlp, parameters, n_jobs=-1, cv=None, verbose=1)
+    clf = RandomizedSearchCV(mlp, parameters, n_jobs=-1, cv=None, verbose=1)#GFGHG
     clf.fit(X, y)
 
     rf = RandomForestClassifier(n_estimators=500)
