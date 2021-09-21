@@ -11,7 +11,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 import openml
 import itertools
 
@@ -102,7 +102,9 @@ for dataset_index, dataset in enumerate(dataset_indices):
         set([round(p / 4), round(np.sqrt(p)), round(p / 3), round(p / 1.5), round(p)])
     )
     parameters_rf = {"max_features": l}
-
+    # [NM]
+    parameters_GBDT={'max_depth':1, 'random_state':0} #'learning_rate':1.0, 
+    
     mlp = MLPClassifier(max_iter=200)
     clf = RandomizedSearchCV(mlp, parameters, n_jobs=-1, cv=None, verbose=1)
     clf.fit(X, y)
@@ -111,13 +113,20 @@ for dataset_index, dataset in enumerate(dataset_indices):
     clfrf = RandomizedSearchCV(rf, parameters_rf, n_jobs=-1, verbose=1)
     clfrf.fit(X, y)
 
+    # [NM]
+    GBDT = GradientBoostingClassifier(n_estimators=500)
+    clfGBDT = RandomizedSearchCV(GBDT, parameters_GBDT, n_jobs=-1, verbose=1)
+    
+    #
     allparams = clf.cv_results_["params"]
     allparamsrf = clfrf.cv_results_["params"]
+    allparamsgbdt = clfGBDT.cv_results_["params"]
 
     best_params = clf.best_params_
     best_paramsrf = clfrf.best_params_
+    best_paramsGBDT = clfGBDT.best_params_
 
-    all_parameters.append([best_params, best_paramsrf])
+    all_parameters.append([best_params, best_paramsrf,best_paramsGBDT])
 
 
 # Save optimal parameters to txt file
