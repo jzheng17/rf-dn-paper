@@ -1,6 +1,7 @@
 """
 Author: Michael Ainsworth
 """
+To_load=True
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -58,7 +59,9 @@ def sample_large_datasets(X_data, y_data):
 
 
 # Load data from CC18 data set suite
-X_data_list, y_data_list, dataset_name = load_cc18()
+
+if To_load:
+    X_data_list, y_data_list, dataset_name = load_cc18()
 
 
 # Generate all combinations of nodes to tune over
@@ -103,7 +106,7 @@ for dataset_index, dataset in enumerate(dataset_indices):
     )
     parameters_rf = {"max_features": l}
     # [NM]
-    parameters_GBDT={'max_depth':1, 'random_state':0} #'learning_rate':1.0, 
+    parameters_GBDT={'max_depth':[1]} #'learning_rate':1.0, 
     
     mlp = MLPClassifier(max_iter=200)
     clf = RandomizedSearchCV(mlp, parameters, n_jobs=-1, cv=None, verbose=1)#GFGHG
@@ -116,7 +119,7 @@ for dataset_index, dataset in enumerate(dataset_indices):
     # [NM]
     GBDT = GradientBoostingClassifier(n_estimators=500)
     clfGBDT = RandomizedSearchCV(GBDT, parameters_GBDT, n_jobs=-1, verbose=1)
-    
+    clfGBDT.fit(X, y)
     #
     allparams = clf.cv_results_["params"]
     allparamsrf = clfrf.cv_results_["params"]
