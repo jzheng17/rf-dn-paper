@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Sep 25 13:39:24 2021
+
+@author: noga mudrik
+"""
+
 """
 Author: Michael Ainsworth
 """
+To_load=True
 
-
-#%%
-"""
-Imports
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 from random import sample
@@ -19,18 +22,6 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 import openml
 import itertools
-
-#%%
-"""
-Parameters for execution
-"""
-
-To_load=True
-algorithms_to_rerun={'RF':0,'DN':0,'GBDT':1}
-
-
-
-#%%
 
 
 def load_cc18():
