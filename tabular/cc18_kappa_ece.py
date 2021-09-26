@@ -14,7 +14,11 @@ from sklearn.metrics import cohen_kappa_score
 import ast
 import openml
 
-print(3)
+#%%
+train_indices_len=1# 72
+#**all_params[dataset][2]
+#%%
+
 def load_cc18():
     """
     Import datasets from OpenML-CC18 dataset suite
@@ -129,7 +133,7 @@ def sample_large_datasets(X_data, y_data):
 # Import CC18 data and pretuned hyperparameters
 X_data_list, y_data_list, dataset_name = load_cc18()
 all_params = read_params_txt("metrics/cc18_all_parameters.txt")
-train_indices = [i for i in range(72)]
+train_indices = [i for i in range(train_indices_len)]
 
 
 # Number of repetitions for each CV fold at each sample size
@@ -150,7 +154,7 @@ GBDT_evolution_ece = np.zeros((8 * len(train_indices), 5))
 
 # For each dataset, train and predict for every sample size
 # Record outputs using Cohen's Kappa and ECE
-for dataset_index, dataset in enumerate(train_indices):
+for dataset_index, dataset in enumerate([1]):
 
     print("\n\nCurrent Dataset: ", dataset)
 
@@ -200,61 +204,61 @@ for dataset_index, dataset in enumerate(train_indices):
 
             # Repeat for number of repetitions, averaging results
             for ii in range(reps):
-                rf = RandomForestClassifier(
-                    **all_params[dataset][1], n_estimators=500, n_jobs=-1
-                )
-                mlp = MLPClassifier(**all_params[dataset][0])
-                GBDT = GradientBoostingClassifier(**all_params[dataset][2],n_estimators=500, n_jobs=-1)
+#                rf = RandomForestClassifier(
+#                    **all_params[dataset][1], n_estimators=500, n_jobs=-1
+#                )
+                #mlp = MLPClassifier(**all_params[dataset][0])
+                GBDT = GradientBoostingClassifier(**all_params[dataset-1][0],n_estimators=500)
                 
-                rf.fit(X_train_new, y_train_new)
-                y_pred_rf = rf.predict(X_test)
-                proba_rf = rf.predict_proba(X_test)
+#                rf.fit(X_train_new, y_train_new)
+#                y_pred_rf = rf.predict(X_test)
+#                proba_rf = rf.predict_proba(X_test)
 
-                mlp.fit(X_train_new, y_train_new)
-                y_pred = mlp.predict(X_test)
-                proba_dn = mlp.predict_proba(X_test)
+#                mlp.fit(X_train_new, y_train_new)
+#                y_pred = mlp.predict(X_test)
+#                proba_dn = mlp.predict_proba(X_test)
                 
                 # GBDT
                 GBDT.fit(X_train_new, y_train_new)
                 y_pred_GBDT = GBDT.predict(X_test)
                 proba_GBDT = GBDT.predict_proba(X_test)
                 
-                k_rf = cohen_kappa_score(y_test, y_pred_rf)
-                rf_reps[ii] = k_rf
-
-                k = cohen_kappa_score(y_test, y_pred)
-                dn_reps[ii] = k
+#                k_rf = cohen_kappa_score(y_test, y_pred_rf)
+#                rf_reps[ii] = k_rf
+#
+#                k = cohen_kappa_score(y_test, y_pred)
+#                dn_reps[ii] = k
 
                 # GBDT
                 k_GBDT = cohen_kappa_score(y_test, y_pred_GBDT)
                 GBDT_reps[ii] = k_GBDT
                 
-                ece_rf = get_ece(proba_rf, y_pred_rf, y_test)
-                rf_reps_ece[ii] = ece_rf
+#                ece_rf = get_ece(proba_rf, y_pred_rf, y_test)
+#                rf_reps_ece[ii] = ece_rf
 
-                ece_dn = get_ece(proba_dn, y_pred, y_test)
-                dn_reps_ece[ii] = ece_dn
+#                ece_dn = get_ece(proba_dn, y_pred, y_test)
+#                dn_reps_ece[ii] = ece_dn
                 
                 ece_GBDT = get_ece(proba_GBDT, y_pred_GBDT, y_test)
                 GBDT_reps_ece[ii] = ece_GBDT
 
             # Record Cohen's Kappa score and ECE for both RF and DN (+ gbdt)
-            rf_evolution[sample_size_index + 8 * dataset_index][k_index] = np.mean(
-                rf_reps
-            )
-            dn_evolution[sample_size_index + 8 * dataset_index][k_index] = np.mean(
-                dn_reps
-            )
+#            rf_evolution[sample_size_index + 8 * dataset_index][k_index] = np.mean(
+#                rf_reps
+#            )
+#            dn_evolution[sample_size_index + 8 * dataset_index][k_index] = np.mean(
+#                dn_reps
+#            )
             GBDT_evolution[sample_size_index + 8 * dataset_index][k_index] = np.mean(
                 GBDT_reps
             )
                         
-            rf_evolution_ece[sample_size_index + 8 * dataset_index][k_index] = np.mean(
-                rf_reps_ece
-            )
-            dn_evolution_ece[sample_size_index + 8 * dataset_index][k_index] = np.mean(
-                dn_reps_ece
-            )
+#            rf_evolution_ece[sample_size_index + 8 * dataset_index][k_index] = np.mean(
+#                rf_reps_ece
+#            )
+#            dn_evolution_ece[sample_size_index + 8 * dataset_index][k_index] = np.mean(
+#                dn_reps_ece
+#            )
             GBDT_evolution_ece[sample_size_index + 8 * dataset_index][k_index] = np.mean(
                 GBDT_reps_ece
             )
@@ -267,10 +271,10 @@ for dataset_index, dataset in enumerate(train_indices):
 
 # Save sample sizes and model results in txt files
 np.savetxt("metrics/cc18_sample_sizes.txt", all_sample_sizes)
-np.savetxt("results/cc18_dn_kappa.txt", dn_evolution)
-np.savetxt("results/cc18_rf_kappa.txt", rf_evolution)
+#np.savetxt("results/cc18_dn_kappa.txt", dn_evolution)
+#np.savetxt("results/cc18_rf_kappa.txt", rf_evolution)
 np.savetxt("results/cc18_GBDT_kappa.txt", GBDT_evolution)
 
-np.savetxt("results/cc18_dn_ece.txt", dn_evolution_ece)
-np.savetxt("results/cc18_rf_ece.txt", rf_evolution_ece)
+#np.savetxt("results/cc18_dn_ece.txt", dn_evolution_ece)
+#np.savetxt("results/cc18_rf_ece.txt", rf_evolution_ece)
 np.savetxt("results/cc18_GBDT_ece.txt", GBDT_evolution_ece)

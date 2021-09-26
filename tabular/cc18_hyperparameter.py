@@ -27,7 +27,7 @@ Parameters for execution
 
 To_load=True
 algorithms_to_rerun={'RF':0,'DN':0,'GBDT':1}
-
+num_datasets=72
 
 
 #%%
@@ -96,12 +96,13 @@ all_parameters = []
 
 
 # Choose dataset indices
-dataset_indices = [i for i in range(72)]
+dataset_indices = [i for i in range(num_datasets)]
 
 
 # For each dataset, use randomized hyperparameter search to optimize parameters
-for dataset_index, dataset in enumerate(dataset_indices):
-
+# [NM] change
+#for dataset_index, dataset in enumerate(dataset_indices):
+for dataset_index, dataset in enumerate([1]):
     print("\n\nCurrent Dataset: ", dataset)
 
     X = X_data_list[dataset]
