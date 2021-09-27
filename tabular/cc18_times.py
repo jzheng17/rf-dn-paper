@@ -104,16 +104,16 @@ dataset_indices = [i for i in range(72)]
 # Import pretuned hyperparameters
 all_params = read_params_txt("metrics/cc18_all_parameters.txt")
 
-
-# Empty arrays to index times into
-rf_times_train = np.zeros((8 * len(dataset_indices), 5))
-rf_times_test = np.zeros((8 * len(dataset_indices), 5))
+#
+## Empty arrays to index times into
+#rf_times_train = np.zeros((8 * len(dataset_indices), 5))
+#rf_times_test = np.zeros((8 * len(dataset_indices), 5))
 
 GBDT_times_train = np.zeros((8 * len(dataset_indices), 5))
 GBDT_times_test = np.zeros((8 * len(dataset_indices), 5))
-
-dn_times_train = np.zeros((8 * len(dataset_indices), 5))
-dn_times_test = np.zeros((8 * len(dataset_indices), 5))
+#
+#dn_times_train = np.zeros((8 * len(dataset_indices), 5))
+#dn_times_test = np.zeros((8 * len(dataset_indices), 5))
 
 
 # For each dataset, determine wall times at each sample size
@@ -154,38 +154,38 @@ for dataset_index, dataset in enumerate(dataset_indices):
 
             X_train_new = X_train[ss_inds[sample_size_index]]
             y_train_new = y_train[ss_inds[sample_size_index]]
-            
-            # RF
-            rf = RandomForestClassifier(
-                **all_params[dataset][1], n_estimators=500, n_jobs=-1
-            )
-
-            start_time = time.perf_counter()
-            rf.fit(X_train_new, y_train_new)
-            end_time = time.perf_counter()
-            rf_train_time = end_time - start_time
-
-            start_time = time.perf_counter()
-            y_pred_rf = rf.predict(X_test)
-            end_time = time.perf_counter()
-            rf_test_time = end_time - start_time
-            
-            # MLP
-            mlp = MLPClassifier(**all_params[dataset][0])
-
-            start_time = time.perf_counter()
-            mlp.fit(X_train_new, y_train_new)
-            end_time = time.perf_counter()
-            dn_train_time = end_time - start_time
-
-            start_time = time.perf_counter()
-            y_pred_mlp = mlp.predict(X_test)
-            end_time = time.perf_counter()
-            dn_test_time = end_time - start_time
+#            
+#            # RF
+#            rf = RandomForestClassifier(
+#                **all_params[dataset][1], n_estimators=500, n_jobs=-1
+#            )
+#
+#            start_time = time.perf_counter()
+#            rf.fit(X_train_new, y_train_new)
+#            end_time = time.perf_counter()
+#            rf_train_time = end_time - start_time
+#
+#            start_time = time.perf_counter()
+#            y_pred_rf = rf.predict(X_test)
+#            end_time = time.perf_counter()
+#            rf_test_time = end_time - start_time
+#            
+#            # MLP
+#            mlp = MLPClassifier(**all_params[dataset][0])
+#
+#            start_time = time.perf_counter()
+#            mlp.fit(X_train_new, y_train_new)
+#            end_time = time.perf_counter()
+#            dn_train_time = end_time - start_time
+#
+#            start_time = time.perf_counter()
+#            y_pred_mlp = mlp.predict(X_test)
+#            end_time = time.perf_counter()
+#            dn_test_time = end_time - start_time
             
             
             # GBDT
-            GBDT = GradientBoostingClassifier(**all_params[dataset][2], n_estimators=500, n_jobs=-1 )
+            GBDT = GradientBoostingClassifier(**all_params[dataset-1][0], n_estimators=500)
 
             start_time = time.perf_counter()
             GBDT.fit(X_train_new, y_train_new)
@@ -198,17 +198,17 @@ for dataset_index, dataset in enumerate(dataset_indices):
             GBDT_test_time = end_time - start_time
             
             
-            # RF
-            rf_times_train[sample_size_index + 8 * dataset_index][
-                k_index
-            ] = rf_train_time
-            rf_times_test[sample_size_index + 8 * dataset_index][k_index] = rf_test_time
-
-            # MLP / DN
-            dn_times_train[sample_size_index + 8 * dataset_index][
-                k_index
-            ] = dn_train_time
-            dn_times_test[sample_size_index + 8 * dataset_index][k_index] = dn_test_time
+#            # RF
+#            rf_times_train[sample_size_index + 8 * dataset_index][
+#                k_index
+#            ] = rf_train_time
+#            rf_times_test[sample_size_index + 8 * dataset_index][k_index] = rf_test_time
+#
+#            # MLP / DN
+#            dn_times_train[sample_size_index + 8 * dataset_index][
+#                k_index
+#            ] = dn_train_time
+#            dn_times_test[sample_size_index + 8 * dataset_index][k_index] = dn_test_time
 
             # GBDT
             GBDT_times_train[sample_size_index + 8 * dataset_index][
@@ -221,9 +221,9 @@ for dataset_index, dataset in enumerate(dataset_indices):
 
 
 # Save results as txt files
-np.savetxt("results/cc18_rf_times_train.txt", rf_times_train)
-np.savetxt("results/cc18_rf_times_test.txt", rf_times_test)
+#np.savetxt("results/cc18_rf_times_train.txt", rf_times_train)
+#np.savetxt("results/cc18_rf_times_test.txt", rf_times_test)
 np.savetxt("results/cc18_GBDT_times_train.txt", GBDT_times_train)
 np.savetxt("results/cc18_GBDT_times_test.txt", GBDT_times_test)
-np.savetxt("results/cc18_dn_times_train.txt", dn_times_train)
-np.savetxt("results/cc18_dn_times_test.txt", dn_times_test)
+#np.savetxt("results/cc18_dn_times_train.txt", dn_times_train)
+#np.savetxt("results/cc18_dn_times_test.txt", dn_times_test)
