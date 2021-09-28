@@ -99,7 +99,9 @@ def sample_large_datasets(X_data, y_data):
 
 # Load data from CC18 data set suite
 X_data_list, y_data_list, dataset_name = load_cc18()
-dataset_indices = [i for i in range(72)]
+#dataset_indices = [i for i in range(72)]
+#[NM] Change
+dataset_indices = [i for i in range(1)]
 
 # Import pretuned hyperparameters
 all_params = read_params_txt("metrics/cc18_all_parameters.txt")
@@ -185,7 +187,7 @@ for dataset_index, dataset in enumerate(dataset_indices):
             
             
             # GBDT
-            GBDT = GradientBoostingClassifier(**all_params[dataset-1][0], n_estimators=500)
+            GBDT = GradientBoostingClassifier(**all_params[dataset][0], n_estimators=500)
 
             start_time = time.perf_counter()
             GBDT.fit(X_train_new, y_train_new)
